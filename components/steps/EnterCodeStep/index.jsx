@@ -14,7 +14,7 @@ export const EnterCodeStep = () => {
   const [codes, setCodes] = React.useState(['', '', '', '']);
   const nextDisabled = codes.some((v) => !v);
 
-  const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeInput = (event) => {
     const index = Number(event.target.getAttribute('id'));
     const value = event.target.value;
     setCodes((prev) => {
@@ -23,7 +23,7 @@ export const EnterCodeStep = () => {
       return newArr;
     });
     if (event.target.nextSibling) {
-      (event.target.nextSibling as HTMLInputElement).focus();
+      (event.target.nextSibling).focus();
     }
   };
 

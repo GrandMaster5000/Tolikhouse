@@ -9,14 +9,7 @@ const colors = {
   blue: styles.buttonBlue,
 };
 
-interface ButtonProps {
-  disabled?: boolean;
-  color?: keyof typeof colors;
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  className?: string;
-}
-
-export const Button: React.FC<ButtonProps> = ({
+export const Button = ({
   children,
   disabled,
   color,

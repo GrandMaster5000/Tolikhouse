@@ -6,14 +6,8 @@ import { Button } from '../Button';
 
 import styles from './Profile.module.scss';
 
-interface ProfileProps {
-  fullname: string;
-  username: string;
-  avatarUrl: string;
-  about: string;
-}
 
-export const Profile: React.FC<ProfileProps> = ({ fullname, username, avatarUrl, about }) => {
+export const Profile = ({ fullname, username, avatarUrl, about }) => {
   return (
     <>
       <Link href="/rooms">

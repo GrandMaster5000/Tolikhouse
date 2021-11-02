@@ -8,14 +8,11 @@ import { StepInfo } from '../../StepInfo';
 import styles from './EnterPhoneStep.module.scss';
 import { MainContext } from '../../../pages';
 
-type InputValueState = {
-  formattedValue: string;
-  value: string;
-};
+
 
 export const EnterPhoneStep = () => {
   const { onNextStep } = React.useContext(MainContext);
-  const [values, setValues] = React.useState<InputValueState>({} as InputValueState);
+  const [values, setValues] = React.useState({});
 
   const nextDisabled = !values.formattedValue || values.formattedValue.includes('_');
 

@@ -8,15 +8,15 @@ import { Avatar } from '../../Avatar';
 import styles from './ChooseAvatarStep.module.scss';
 import { MainContext } from '../../../pages';
 
-export const ChooseAvatarStep: React.FC = () => {
+export const ChooseAvatarStep = () => {
   const { onNextStep } = React.useContext(MainContext);
-  const [avatarUrl, setAvatarUrl] = React.useState<string>(
+  const [avatarUrl, setAvatarUrl] = React.useState(
     'https://sun2-3.userapi.com/s/v1/if1/CAR1Aao3yIica7xq77xIIMMTn29CME-cE5JSJBc8OTNVt29JQjnhR0ZsX_9IO-AzgwVbfgB6.jpg?size=200x0&quality=96&crop=138,44,1048,1048&ava=1',
   );
   const inputFileRef = React.useRef<HTMLInputElement>(null);
 
-  const handleChangeImage = (event: Event): void => {
-    const file = (event.target as HTMLInputElement).files[0];
+  const handleChangeImage = (event) => {
+    const file = (event.target).files[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setAvatarUrl(imageUrl);

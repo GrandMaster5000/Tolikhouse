@@ -7,7 +7,7 @@ import styles from './TwitterStep.module.scss';
 import React from 'react';
 import { MainContext } from '../../../pages';
 
-export const TwitterStep: React.FC = () => {
+export const TwitterStep = () => {
   const { onNextStep } = React.useContext(MainContext);
 
   return (

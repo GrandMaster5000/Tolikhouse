@@ -13,7 +13,7 @@ export const EnterNameStep = () => {
 
   const nextDisabled = !inputValue;
 
-  const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeInput = (event) => {
     setInputValue(event.target.value);
   };
 
