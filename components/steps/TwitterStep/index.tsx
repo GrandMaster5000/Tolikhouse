@@ -5,10 +5,10 @@ import { StepInfo } from '../../StepInfo';
 
 import styles from './TwitterStep.module.scss';
 import React from 'react';
-import { MainContext } from '../../../pages';
+import { StepContext } from '../../../pages';
 
 export const TwitterStep = () => {
-  const { onNextStep } = React.useContext(MainContext);
+  const { onNextStep } = React.useContext(StepContext);
 
   return (
     <div className={styles.block}>

@@ -4,16 +4,16 @@ import { Button } from '../../Button';
 import { StepInfo } from '../../StepInfo';
 
 import styles from './EnterNameStep.module.scss';
-import React from 'react';
-import { MainContext } from '../../../pages';
+import React, { ChangeEvent } from 'react';
+import { StepContext } from '../../../pages';
 
 export const EnterNameStep = () => {
   const [inputValue, setInputValue] = React.useState<string>('');
-  const { onNextStep } = React.useContext(MainContext);
+  const { onNextStep } = React.useContext(StepContext);
 
   const nextDisabled = !inputValue;
 
-  const handleChangeInput = (event) => {
+  const handleChangeInput = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
 

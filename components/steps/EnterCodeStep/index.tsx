@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import { WhiteBlock } from '../../WhiteBlock';
@@ -14,8 +14,8 @@ export const EnterCodeStep = () => {
   const [codes, setCodes] = React.useState(['', '', '', '']);
   const nextDisabled = codes.some((v) => !v);
 
-  const handleChangeInput = (event) => {
-    const index = Number(event.target.getAttribute('id'));
+  const handleChangeInput = (event: ChangeEvent<HTMLInputElement>) => {
+    const index = +event.target.getAttribute('id');
     const value = event.target.value;
     setCodes((prev) => {
       const newArr = [...prev];
@@ -23,7 +23,7 @@ export const EnterCodeStep = () => {
       return newArr;
     });
     if (event.target.nextSibling) {
-      (event.target.nextSibling).focus();
+      (event.target.nextSibling as HTMLInputElement).focus();
     }
   };
 

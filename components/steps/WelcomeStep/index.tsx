@@ -2,11 +2,11 @@ import { WhiteBlock } from '../../WhiteBlock';
 import { Button } from '../../Button';
 
 import styles from './WelcomeStep.module.scss';
-// import { MainContext } from '../../../pages';
+import { StepContext } from '../../../pages';
 import React from 'react';
 
-export const WelcomeStep = () => {
-  // const { onNextStep } = React.useContext(MainContext);
+export const WelcomeStep: React.FC = () => {
+  const { onNextStep } = React.useContext(StepContext);
 
   return (
     <WhiteBlock className={styles.block}>
@@ -16,10 +16,10 @@ export const WelcomeStep = () => {
       </h3>
       <p>
         We’re working hard to get Clubhouse ready for everyone! While we wrap up the finishing
-        youches, we’re adding people gradually to make sure nothing breaks :)
+        youches, we’re adding people gradually to make sure nothing breaks :/
       </p>
       <div>
-        <Button >
+        <Button onClick={onNextStep}>
           Get your username
           <img className="d-ib ml-10" src="/static/arrow.svg" />
         </Button>
