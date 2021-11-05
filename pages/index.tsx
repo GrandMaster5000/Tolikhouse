@@ -31,7 +31,7 @@ export default function Home() {
   }
 
   return (
-   <StepContext.Provider value={{ step, onNextStep}}>
+   <StepContext.Provider value={{ step, onNextStep }}>
       <Step/>
    </StepContext.Provider>
   )

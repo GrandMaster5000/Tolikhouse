@@ -26,7 +26,7 @@ export const EnterNameStep = () => {
       <StepInfo
         icon="/static/man.png"
         title="What’s your full name?"
-        description="People use real names on Clubhouse :) Thnx!"
+        description="People use real names on Clubhouse :) Thanks!"
       />
       <WhiteBlock className={clsx('m-auto', styles.whiteBlock)}>
         <div className="mb-30">
