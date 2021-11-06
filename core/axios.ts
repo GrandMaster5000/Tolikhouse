@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const instante = axios.create({
-    baseURL: 'https://jsonpalceholder.typicode.com/',
-    withCredentials: true
+    withCredentials: true,
+    baseURL: 'http://localhost:3000/'
 })
 
 export default instante

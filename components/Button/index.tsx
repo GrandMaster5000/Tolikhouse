@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { MouseEvent } from 'react';
+import React, { forwardRef, MouseEvent, Ref } from 'react';
 
 import styles from './Button.module.scss';
 
@@ -13,18 +13,20 @@ interface ButtonProps {
   disabled?: boolean;
   color?: 'green' | 'gray' | 'blue';
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
-  className?: string
+  className?: string;
+  children: React.ReactNode
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export const Button = forwardRef(({
   children,
   disabled,
   color = 'green',
   onClick,
   className,
-}) => {
+}: ButtonProps, ref: Ref<HTMLButtonElement>) => {
   return (
     <button
+      ref={ref} 
       onClick={onClick}
       type="button"
       className={clsx(className, styles.button, colors[color])}
@@ -32,4 +34,4 @@ export const Button: React.FC<ButtonProps> = ({
       {children}
     </button>
   );
-};
+});

@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import React from 'react';
 import { Avatar } from '../Avatar';
+import { BackButton } from '../BackButton';
 import { Button } from '../Button';
 
 import styles from './Profile.module.scss';
@@ -15,13 +16,11 @@ interface ProfileProps {
 
 export const Profile = ({ fullname, username, avatarUrl, about }: ProfileProps) => {
   return (
-    <>
-      <Link href="/rooms">
-        <div className="d-flex mb-30 cup">
-          <img src="/static/back-arrow.svg" alt="Back" className="mr-10" />
-          <h3>Back</h3>
-        </div>
-      </Link>
+    <>   
+      <BackButton
+        title='Back'
+        href='/rooms'
+      />
 
       <div className="d-flex  align-items-center">
         <div className="d-flex align-items-center">
