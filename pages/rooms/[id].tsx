@@ -4,7 +4,6 @@ import { Header } from '../../components/Header';
 import { Room } from '../../components/Room';
 
 export default function RoomPage({ room }) {
-    console.log(room);
     return (
         <>
             <Header/>

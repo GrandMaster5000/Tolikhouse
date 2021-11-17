@@ -49,7 +49,6 @@ export const getServerSideProps = async (ctx) => {
             }
         }
     } catch(e) {
-        console.log('ERORR');
         return {
             props: {
                 rooms: []
