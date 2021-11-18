@@ -4,11 +4,28 @@ import { Button } from '../../Button';
 import { StepInfo } from '../../StepInfo';
 
 import styles from './TwitterStep.module.scss';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StepContext } from '../../../pages';
 
 export const TwitterStep = () => {
   const { onNextStep } = React.useContext(StepContext);
+
+  const onClickGitHub = () => {
+    const win = window.open('http://localhost:3001/auth/github', 'Auth', 'width=400,height=400,status=yes,toolbar=no,menubar=no,location=no');
+
+    const timer = setInterval(() => {
+        if(win.closed) {
+          clearInterval(timer)
+          onNextStep()
+        }
+    }, 100)
+  }
+
+  useEffect(() => {
+    window.addEventListener('message', (data) => {
+
+    })
+  }, [])
 
   return (
     <div className={styles.block}>
@@ -30,7 +47,7 @@ export const TwitterStep = () => {
           </svg>
         </div>
         <h2 className="mb-40">Archakov Dennis</h2>
-        <Button onClick={onNextStep}>
+        <Button onClick={onClickGitHub}>
           <img src="/static/twitter.svg" alt="Twitter logo" className={styles.twitterLogo} />
           Import from GitHub
           <img className="d-ib ml-10" src="/static/arrow.svg" />
