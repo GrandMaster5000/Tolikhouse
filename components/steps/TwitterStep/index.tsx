@@ -32,7 +32,7 @@ export const TwitterStep = () => {
         <h2 className="mb-40">Archakov Dennis</h2>
         <Button onClick={onNextStep}>
           <img src="/static/twitter.svg" alt="Twitter logo" className={styles.twitterLogo} />
-          Import from Twitter
+          Import from GitHub
           <img className="d-ib ml-10" src="/static/arrow.svg" />
         </Button>
         <div className="link mt-20 cup d-ib">Enter my info manually</div>

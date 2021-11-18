@@ -17,7 +17,7 @@ module.exports = {
       isActive: {
         type: Sequelize.INTEGER
       },
-      usename: {
+      username: {
         type: Sequelize.STRING
       },
       phone: {
