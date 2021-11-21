@@ -1,8 +1,7 @@
-import axios from 'axios';
+import axios from "axios";
 
 const instante = axios.create({
-    withCredentials: true,
-    baseURL: 'http://localhost:3000/'
-})
+  baseURL: "http://localhost:3001",
+});
 
-export default instante
+export default instante;

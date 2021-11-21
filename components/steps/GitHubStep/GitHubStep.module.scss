@@ -21,6 +21,14 @@
   }
 }
 
+.button {
+  background-color: #24292E;
+  transition: .2s all;
+  &:hover {
+    background-color: lighten(#24292E, 10);
+  }
+}
+
 .whiteBlock {
   width: 460px;
 }
