@@ -23,6 +23,7 @@ export const GitHubStep = () => {
     window.addEventListener("message", ({ data }) => {
       const user: string = data;
       if (typeof data === "string" && user.includes("avatarUrl")) {
+        Cookies.remove("token");
         const json: UserData = JSON.parse(user);
         setUserData(json);
         onNextStep();

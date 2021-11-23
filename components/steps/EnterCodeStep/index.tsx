@@ -1,21 +1,21 @@
-import React, { ChangeEvent } from 'react';
-import clsx from 'clsx';
-import { useRouter } from 'next/router';
-import { WhiteBlock } from '../../WhiteBlock';
-import { Button } from '../../Button';
-import { StepInfo } from '../../StepInfo';
-import Axios from '../../../core/axios';
+import React, { ChangeEvent } from "react";
+import clsx from "clsx";
+import { useRouter } from "next/router";
+import { WhiteBlock } from "../../WhiteBlock";
+import { Button } from "../../Button";
+import { StepInfo } from "../../StepInfo";
+import axios from "../../../core/axios";
 
-import styles from './EnterPhoneStep.module.scss';
+import styles from "./EnterPhoneStep.module.scss";
 
 export const EnterCodeStep = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [codes, setCodes] = React.useState(['', '', '', '']);
+  const [codes, setCodes] = React.useState(["", "", "", ""]);
   const nextDisabled = codes.some((v) => !v);
 
   const handleChangeInput = (event: ChangeEvent<HTMLInputElement>) => {
-    const index = +event.target.getAttribute('id');
+    const index = +event.target.getAttribute("id");
     const value = event.target.value;
     setCodes((prev) => {
       const newArr = [...prev];
@@ -24,16 +24,18 @@ export const EnterCodeStep = () => {
     });
     if (event.target.nextSibling) {
       (event.target.nextSibling as HTMLInputElement).focus();
+    } else {
+      onSubmit([...codes, value].join(""));
     }
   };
 
-  const onSubmit = async () => {
+  const onSubmit = async (code: string) => {
     try {
       setIsLoading(true);
-      await Axios.get('/todos');
-      router.push('/rooms');
+      await axios.get(`/auth/sms/activate=${code}`);
+      router.push("/rooms");
     } catch (error) {
-      alert('Ошибка при активации!');
+      alert("Ошибка при активации!");
     }
 
     setIsLoading(false);
@@ -43,9 +45,12 @@ export const EnterCodeStep = () => {
     <div className={styles.block}>
       {!isLoading ? (
         <>
-          <StepInfo icon="/static/numbers.png" title="Enter your activate code" />
-          <WhiteBlock className={clsx('m-auto mt-30', styles.whiteBlock)}>
-            <div className={clsx('mb-30', styles.codeInput)}>
+          <StepInfo
+            icon="/static/numbers.png"
+            title="Enter your activate code"
+          />
+          <WhiteBlock className={clsx("m-auto mt-30", styles.whiteBlock)}>
+            <div className={clsx("mb-30", styles.codeInput)}>
               {codes.map((code, index) => (
                 <input
                   key={index}
@@ -58,7 +63,10 @@ export const EnterCodeStep = () => {
                 />
               ))}
             </div>
-            <Button onClick={onSubmit} disabled={nextDisabled}>
+            <Button
+              onClick={(e) => onSubmit(codes.join(""))}
+              disabled={nextDisabled}
+            >
               Next
               <img className="d-ib ml-10" src="/static/arrow.svg" />
             </Button>

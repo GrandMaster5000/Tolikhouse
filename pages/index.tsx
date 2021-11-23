@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { WelcomeStep } from "../components/steps/WelcomeStep";
 import { EnterNameStep } from "../components/steps/EnterNameStep";
 import { GitHubStep } from "../components/steps/GitHubStep";
@@ -37,6 +37,27 @@ export const StepContext = createContext<StepContextProps>(
   {} as StepContextProps
 );
 
+const getUserData = (): UserData | null => {
+  try {
+    return JSON.parse(window.localStorage.getItem("userData"));
+  } catch (e) {
+    return null;
+  }
+};
+
+const getFormStep = (): number => {
+  const json = getUserData();
+  if (json) {
+    if (json.phone) {
+      return 5;
+    } else {
+      return 4;
+    }
+  }
+
+  return 0;
+};
+
 export default function Home() {
   const [step, setStep] = useState<number>(0);
   const [userData, setUserData] = useState<UserData | undefined>();
@@ -52,6 +73,23 @@ export default function Home() {
       [field]: value,
     }));
   };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const json = getUserData();
+      if (json) {
+        setUserData(json);
+        setStep(getFormStep());
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      "userData",
+      userData ? JSON.stringify(userData) : ""
+    );
+  }, [userData]);
 
   return (
     <StepContext.Provider

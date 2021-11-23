@@ -28,9 +28,11 @@ const uploadFile = async (file: File) => {
 
 export const ChooseAvatarStep: React.FC = () => {
   const { onNextStep, setFieldValue, userData } = useContext(StepContext);
-  const [avatarUrl, setAvatarUrl] = useState(
-    "https://sun2-3.userapi.com/s/v1/if1/CAR1Aao3yIica7xq77xIIMMTn29CME-cE5JSJBc8OTNVt29JQjnhR0ZsX_9IO-AzgwVbfgB6.jpg?size=200x0&quality=96&crop=138,44,1048,1048&ava=1"
-  );
+  const avatarLetters = userData.fullname
+    .split(" ")
+    .map((s) => s[0])
+    .join("");
+  const [avatarUrl, setAvatarUrl] = useState(userData.avatarUrl);
   const inputFileRef = useRef<HTMLInputElement>(null);
 
   const handleChangeImage = async (event: Event) => {
@@ -62,7 +64,12 @@ export const ChooseAvatarStep: React.FC = () => {
       />
       <WhiteBlock className={clsx("m-auto mt-40", styles.whiteBlock)}>
         <div className={styles.avatar}>
-          <Avatar width="120px" height="120px" src={avatarUrl} />
+          <Avatar
+            width="120px"
+            height="120px"
+            src={avatarUrl}
+            letters={avatarLetters}
+          />
         </div>
         <div className="mb-30">
           <label htmlFor="image" className="link cup">

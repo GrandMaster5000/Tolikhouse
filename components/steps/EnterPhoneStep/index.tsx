@@ -1,23 +1,43 @@
-import React from 'react';
-import clsx from 'clsx';
-import NumberFormat from 'react-number-format';
-import { WhiteBlock } from '../../WhiteBlock';
-import { Button } from '../../Button';
-import { StepInfo } from '../../StepInfo';
+import React, { useState } from "react";
+import clsx from "clsx";
+import NumberFormat from "react-number-format";
+import { WhiteBlock } from "../../WhiteBlock";
+import { Button } from "../../Button";
+import { StepInfo } from "../../StepInfo";
 
-import styles from './EnterPhoneStep.module.scss';
-import { StepContext } from '../../../pages';
+import styles from "./EnterPhoneStep.module.scss";
+import { StepContext } from "../../../pages";
+import axios from "../../../core/axios";
 
 type InputValueState = {
   formattedValue: string;
   value: string;
-}
+};
 
 export const EnterPhoneStep = () => {
-  const { onNextStep } = React.useContext(StepContext);
-  const [values, setValues] = React.useState<InputValueState>({} as InputValueState);
+  const { onNextStep, setFieldValue } = React.useContext(StepContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const [values, setValues] = React.useState<InputValueState>(
+    {} as InputValueState
+  );
 
-  const nextDisabled = !values.formattedValue || values.formattedValue.includes('_');
+  const nextDisabled =
+    !values.formattedValue || values.formattedValue.includes("_");
+
+  const onSubmit = async () => {
+    try {
+      setIsLoading(true);
+      await axios.get(`/auth/sms?phone=${values.value}`);
+      console.log(values.value);
+      console.log(values.formattedValue);
+      setFieldValue("phone", values.value);
+      onNextStep();
+    } catch (e) {
+      console.warn("Error send SMS", e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className={styles.block}>
@@ -26,8 +46,8 @@ export const EnterPhoneStep = () => {
         title="Enter your phone #"
         description="We will send you a confirmation code"
       />
-      <WhiteBlock className={clsx('m-auto mt-30', styles.whiteBlock)}>
-        <div className={clsx('mb-30', styles.input)}>
+      <WhiteBlock className={clsx("m-auto mt-30", styles.whiteBlock)}>
+        <div className={clsx("mb-30", styles.input)}>
           <img src="/static/russian-flag.png" alt="flag" width={24} />
           <NumberFormat
             className="field"
@@ -35,16 +55,24 @@ export const EnterPhoneStep = () => {
             mask="_"
             placeholder="+7 (999) 333-22-11"
             value={values.value}
-            onValueChange={({ formattedValue, value }) => setValues({ formattedValue, value })}
+            onValueChange={({ formattedValue, value }) =>
+              setValues({ formattedValue, value })
+            }
           />
         </div>
-        <Button disabled={nextDisabled} onClick={onNextStep}>
-          Next
-          <img className="d-ib ml-10" src="/static/arrow.svg" />
+        <Button disabled={isLoading || nextDisabled} onClick={onSubmit}>
+          {isLoading ? (
+            "Sending..."
+          ) : (
+            <>
+              Next
+              <img className="d-ib ml-10" src="/static/arrow.svg" />
+            </>
+          )}
         </Button>
-        <p className={clsx(styles.policyText, 'mt-30')}>
-          By entering your number, you’re agreeing to our Terms of Service and Privacy Policy.
-          Thanks!
+        <p className={clsx(styles.policyText, "mt-30")}>
+          By entering your number, you’re agreeing to our Terms of Service and
+          Privacy Policy. Thanks!
         </p>
       </WhiteBlock>
     </div>
