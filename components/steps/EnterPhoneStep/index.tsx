@@ -28,8 +28,6 @@ export const EnterPhoneStep = () => {
     try {
       setIsLoading(true);
       await axios.get(`/auth/sms?phone=${values.value}`);
-      console.log(values.value);
-      console.log(values.formattedValue);
       setFieldValue("phone", values.value);
       onNextStep();
     } catch (e) {

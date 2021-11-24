@@ -2,7 +2,6 @@ import React, { ChangeEvent } from "react";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import { WhiteBlock } from "../../WhiteBlock";
-import { Button } from "../../Button";
 import { StepInfo } from "../../StepInfo";
 import axios from "../../../core/axios";
 
@@ -32,10 +31,11 @@ export const EnterCodeStep = () => {
   const onSubmit = async (code: string) => {
     try {
       setIsLoading(true);
-      await axios.get(`/auth/sms/activate=${code}`);
+      await axios.get(`/auth/sms/activate?code=${code}`);
       router.push("/rooms");
     } catch (error) {
       alert("Ошибка при активации!");
+      setCodes(["", "", "", ""]);
     }
 
     setIsLoading(false);
@@ -50,7 +50,7 @@ export const EnterCodeStep = () => {
             title="Enter your activate code"
           />
           <WhiteBlock className={clsx("m-auto mt-30", styles.whiteBlock)}>
-            <div className={clsx("mb-30", styles.codeInput)}>
+            <div className={styles.codeInput}>
               {codes.map((code, index) => (
                 <input
                   key={index}
@@ -63,13 +63,6 @@ export const EnterCodeStep = () => {
                 />
               ))}
             </div>
-            <Button
-              onClick={(e) => onSubmit(codes.join(""))}
-              disabled={nextDisabled}
-            >
-              Next
-              <img className="d-ib ml-10" src="/static/arrow.svg" />
-            </Button>
           </WhiteBlock>
         </>
       ) : (

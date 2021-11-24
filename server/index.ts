@@ -29,7 +29,7 @@ app.get(
   passport.authenticate("jwt", { session: false }),
   AuthController.getMe
 );
-app.post(
+app.get(
   "/auth/sms/activate",
   passport.authenticate("jwt", { session: false }),
   AuthController.activate

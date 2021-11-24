@@ -26,7 +26,7 @@ class AuthController {
       });
     }
 
-    const whereQuery = { code: smsCode, userId: userId };
+    const whereQuery = { code: smsCode, user_id: userId };
 
     try {
       const findCode = await Code.findOne({
@@ -38,11 +38,13 @@ class AuthController {
           where: whereQuery,
         });
 
-        await User.update({ isActivate: true }, { where: { id: userId } });
+        await User.update({ isActivate: 1 }, { where: { id: userId } });
 
         return res.send();
       } else {
-        throw new Error("User not found");
+        res.status(400).json({
+          message: "Code not found",
+        });
       }
     } catch (e) {
       res.status(500).json({
@@ -77,7 +79,6 @@ class AuthController {
         return res.status(400).json({ message: "Сode has already been sent" });
       }
 
-      console.log(smsCode);
       await Code.create({
         code: smsCode,
         user_id: userId,
@@ -85,7 +86,6 @@ class AuthController {
 
       res.status(201).send();
     } catch (e) {
-      console.log(e);
       res.status(500).json({
         message: "Error when sending SMS",
       });

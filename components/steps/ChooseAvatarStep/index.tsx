@@ -43,7 +43,6 @@ export const ChooseAvatarStep: React.FC = () => {
       setAvatarUrl(imageUrl);
       const data = await uploadFile(file);
       target.value = "";
-      console.log(data.url);
       setAvatarUrl(data.url);
       setFieldValue("avatarUrl", data.url);
     }
