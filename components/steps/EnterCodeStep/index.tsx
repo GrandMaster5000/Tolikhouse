@@ -33,6 +33,7 @@ export const EnterCodeStep = () => {
       setIsLoading(true);
       await axios.get(`/auth/sms/activate?code=${code}`);
       router.push("/rooms");
+      console.log(router);
     } catch (error) {
       alert("Ошибка при активации!");
       setCodes(["", "", "", ""]);

@@ -5,6 +5,9 @@ import { GitHubStep } from "../components/steps/GitHubStep";
 import { ChooseAvatarStep } from "../components/steps/ChooseAvatarStep";
 import { EnterPhoneStep } from "../components/steps/EnterPhoneStep";
 import { EnterCodeStep } from "../components/steps/EnterCodeStep";
+import { GetServerSideProps } from "next";
+import { checkAuth } from "../utils/checkAuth";
+import axios from "../core/axios";
 
 const stepsComponents = {
   0: WelcomeStep,
@@ -85,10 +88,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    window.localStorage.setItem(
-      "userData",
-      userData ? JSON.stringify(userData) : ""
-    );
+    if (userData) {
+      window.localStorage.setItem("userData", JSON.stringify(userData));
+      axios.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`;
+    }
   }, [userData]);
 
   return (
@@ -99,3 +102,20 @@ export default function Home() {
     </StepContext.Provider>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  try {
+    const user = await checkAuth(ctx);
+    if (user) {
+      return {
+        props: {},
+        redirect: {
+          destination: "/rooms",
+          permanent: false,
+        },
+      };
+    }
+  } catch (e) {}
+
+  return { props: {} };
+};

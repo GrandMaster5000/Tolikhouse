@@ -1,3 +1,4 @@
+import axios from "../core/axios";
 import { GetServerSidePropsContext } from "next";
 import nookies from "nookies";
 import { UserApi } from "../api/UserApi";
@@ -9,8 +10,9 @@ export const checkAuth = async (
   try {
     const cookie = nookies.get(ctx);
     if (cookie.token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${cookie.token}`;
     }
-
+    console.log(axios.defaults.headers);
     return await UserApi.getMe();
   } catch (e) {
     return null;

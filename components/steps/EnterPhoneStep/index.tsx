@@ -15,7 +15,7 @@ type InputValueState = {
 };
 
 export const EnterPhoneStep = () => {
-  const { onNextStep, setFieldValue } = React.useContext(StepContext);
+  const { onNextStep, setFieldValue, userData } = React.useContext(StepContext);
   const [isLoading, setIsLoading] = useState(false);
   const [values, setValues] = React.useState<InputValueState>(
     {} as InputValueState

@@ -3,11 +3,10 @@ import { parseCookies } from "nookies";
 
 const cookies = parseCookies();
 
+console.log(cookies);
 const instante = axios.create({
   baseURL: "http://localhost:3001",
-  headers: {
-    Authorization: "Bearer" + " " + cookies?.token,
-  },
 });
 
+instante.defaults.headers.common['Authorization'] = `Bearer ${cookies?.token}`;
 export default instante;
