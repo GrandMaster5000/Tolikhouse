@@ -2,13 +2,15 @@ import { Button } from "../../components/Button";
 import { ConversationCard } from "../../components/ConversationsCard";
 import { Header } from "../../components/Header";
 import Link from "next/link";
-import Axios from "../../core/axios";
-import React from "react";
+import React, { useState } from "react";
 import Head from "next/head";
 import { GetServerSideProps } from "next";
 import { checkAuth } from "../../utils/checkAuth";
+import { StartRoomModal } from '../../components/StartRoomModal';
 
 const Rooms = ({ rooms = [] }) => {
+  const [visibleModal, setVisibleModal] = useState(false);
+
   return (
     <>
       <Head>
@@ -19,8 +21,9 @@ const Rooms = ({ rooms = [] }) => {
       <div className="container">
         <div className="mt-40 d-flex align-items-center justify-content-between">
           <h1>All conversations</h1>
-          <Button color="green">+ Start room</Button>
+          <Button onClick={() => setVisibleModal(true)} color="green">+ Start room</Button>
         </div>
+        {visibleModal && <StartRoomModal onClose={() => setVisibleModal(false)}/>}
         <div className="grid mt-30">
           {rooms.map((obj) => (
             <Link key={obj._id} href={`/rooms/${obj._id}`}>

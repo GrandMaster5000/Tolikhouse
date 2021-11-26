@@ -1,9 +1,11 @@
-import axios from "../core/axios";
-import { UserData } from "../pages";
+import { AxiosInstance } from 'axios';
+import { UserData } from '../pages';
 
-export const UserApi = {
-  getMe: async (): Promise<UserData> => {
-    const { data } = await axios.get("/auth/me");
-    return data;
-  },
-};
+export const UserApi = (instance: AxiosInstance) => {
+    return {
+        getMe: async (): Promise<UserData> => {
+            const { data } = await instance.get("/auth/me");
+            return data;
+        },
+    }
+}
