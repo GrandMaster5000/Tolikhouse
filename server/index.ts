@@ -6,6 +6,7 @@ import { passport } from "./core/passport";
 import { uploader } from "./core/uploader";
 import AuthController from "./controllers/AuthController";
 import UploadController from "./controllers/UploadController";
+import RoomController from "./controllers/RoomController";
 
 dotenv.config({
   path: "./server/.env",
@@ -16,6 +17,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(passport.initialize());
+
+app.get('/rooms', passport.authenticate("jwt", { session: false }), RoomController.index);
+app.post('/rooms', passport.authenticate("jwt", { session: false }), RoomController.index);
+app.post('/rooms/:id', () => {});
+app.delete('/rooms/:id', () => {});
 
 app.get("/auth/github", passport.authenticate("github"));
 
