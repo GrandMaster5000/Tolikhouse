@@ -15,7 +15,8 @@ module.exports = {
         type: Sequelize.JSON
       },
       listenersCount: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        defaultValue: 0
       },
       createdAt: {
         allowNull: false,

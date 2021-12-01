@@ -8,7 +8,6 @@ import { EnterCodeStep } from "../components/steps/EnterCodeStep";
 import { GetServerSideProps } from "next";
 import { checkAuth } from "../utils/checkAuth";
 import axios from "../core/axios";
-import { Api } from '../api';
 
 const stepsComponents = {
   0: WelcomeStep,
