@@ -16,7 +16,7 @@ interface RoomPageProps {
 
 const RoomsPage: NextPage<RoomPageProps> = ({ rooms = [] }) => {
   const [visibleModal, setVisibleModal] = useState(false);
-  console.log(rooms);
+
   return (
     <>
       <Head>
@@ -37,7 +37,7 @@ const RoomsPage: NextPage<RoomPageProps> = ({ rooms = [] }) => {
                 <ConversationCard
                   title={obj.title}
                   avatars={[]}
-                  speakers={obj.speakers}
+                  speakers={obj.speakers || []}
                   listenersCount={obj.listenersCount}
                 />
               </a>

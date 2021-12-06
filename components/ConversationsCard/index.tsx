@@ -35,7 +35,7 @@ export const ConversationCard: React.FC<ConversationCard> = ({
         </div>
         <div className={clsx(styles.info, 'ml-10')}>
           <ul className={styles.users}>
-            {/* {speakers.map((name, i) => (
+            {speakers.map((name, i) => (
               <li key={name + i}>
                 {name} 
                 <img 
@@ -45,20 +45,20 @@ export const ConversationCard: React.FC<ConversationCard> = ({
                     height={14} 
                 />
               </li>
-            ))} */}
+            ))}
           </ul>
           <ul className={styles.details}>
             <li>
-              {listenersCount}
               <img 
                 src="/static/user.svg" 
                 alt="Users count" 
                 width={12} 
                 height={12} 
-                />
+              />
+              &nbsp;
+              {listenersCount}
             </li>
             <li>
-              {listenersCount}
               <img
                 className="ml-5"
                 src="/static/message.svg"
@@ -66,6 +66,8 @@ export const ConversationCard: React.FC<ConversationCard> = ({
                 width={12}
                 height={12}
               />
+              &nbsp;
+              {speakers.length}
             </li>
           </ul>
         </div>

@@ -2,6 +2,7 @@ import Axios from '../../core/axios';
 import { BackButton } from '../../components/BackButton';
 import { Header } from '../../components/Header';
 import { Room } from '../../components/Room';
+import { Api } from '../../api';
 
 export default function RoomPage({ room }) {
     return (
@@ -20,8 +21,9 @@ export default function RoomPage({ room }) {
 
 export const getServerSideProps = async (ctx) => {
     try {
-        const { data } = await Axios.get('/rooms.json')
-        const room = data.find(obj => obj._id === ctx.query.id)
+        const roomId = ctx.query.id;
+        const room = await Api(ctx).getRoom(roomId);
+        
         return {
             props: {
                 room
@@ -30,7 +32,11 @@ export const getServerSideProps = async (ctx) => {
     } catch(e) {
         console.log('ERROR');
         return {
-            props:{}
+            props:{},
+            redirect: {
+                destination: '/rooms',
+                permanent: false
+            }
         }
     }
 }
