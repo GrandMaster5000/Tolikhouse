@@ -5,6 +5,8 @@ import React from 'react';
 import { Button } from '../Button';
 
 import styles from './StartRoomModal.module.scss';
+import { RoomApi, RoomType } from '../../api/RoomApi';
+import Axios  from '../../core/axios';
 
 interface StartRoomModalProps {
     onClose: () => void;
@@ -12,7 +14,24 @@ interface StartRoomModalProps {
 
 
 export const StartRoomModal = ({ onClose }: StartRoomModalProps) => {
-    const [roomType, setRoomType] = useState('open')
+    const router = useRouter();
+    const [roomType, setRoomType] = useState<RoomType>('open')
+    const [roomTitle, setRoomTitle] = useState('')
+
+    const onSubmit = async () => {
+        try {
+            if (!roomTitle) {
+                return alert('Specify the title of the room')
+            }
+            const room = await RoomApi(Axios).createRoom({
+                title: roomTitle, 
+                type: roomType
+            })
+            router.push(`/rooms/${room.id}`)
+        } catch (e) {
+            alert('Error while creating a room')
+        }
+    }
 
     return (
         <div className={styles.overlay}>
@@ -28,8 +47,8 @@ export const StartRoomModal = ({ onClose }: StartRoomModalProps) => {
                 <div className="mb-30">
                     <h3>Topic</h3>
                     <input
-                        value={''}
-                        onChange={(e) => {}}
+                        value={roomTitle}
+                        onChange={(e) => setRoomTitle(e.target.value)}
                         className={styles.inputTitle}
                         placeholder="Enter the topic to be discussed"
                     />
@@ -60,7 +79,7 @@ export const StartRoomModal = ({ onClose }: StartRoomModalProps) => {
                 <div className={styles.delimiter}></div>
                 <div className="text-center">
                     <h3>Start a room open to everyone</h3>
-                    <Button onClick={() => {}} color="green">
+                    <Button onClick={onSubmit} color="green">
                         <img width="18px" height="18px" src="/static/celebration.png" alt="Celebration" />
                         Let's go
                     </Button>

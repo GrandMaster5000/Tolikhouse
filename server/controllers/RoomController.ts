@@ -25,7 +25,7 @@ class RoomController {
       }
 
       const room = await Room.create(data);
-      res.json(room);
+      res.status(201).json(room);
     } catch (e) {
       res.status(500).json({ message: "Error", e });
     }
@@ -34,11 +34,12 @@ class RoomController {
   async show(req: express.Request, res: express.Response) {
     try {
       const roomId = req.params.id;
-      const room = await Room.findByPk(roomId);
-
+      
       if (isNaN(+roomId)) {
         return res.status(404).json({ message: "Wrong room id" });
       }
+
+      const room = await Room.findByPk(roomId);
 
       if (!room) {
         return res.status(404).json({ message: "Room not found" });
@@ -50,7 +51,25 @@ class RoomController {
     }
   }
 
-  async delete(req: express.Request, res: express.Response) {}
+  async delete(req: express.Request, res: express.Response) {
+    try {
+      const roomId = req.params.id;
+      
+      if (isNaN(+roomId)) {
+        return res.status(404).json({ message: "Wrong room id" });
+      }
+
+      await Room.destroy({
+        where: { id: roomId }
+      });
+      
+     
+
+      res.send();
+    } catch (e) {
+      res.status(500).json({ message: "Error", e });
+    }
+  }
 }
 
 export default new RoomController();

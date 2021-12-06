@@ -1,10 +1,12 @@
 import { GetServerSidePropsContext } from 'next';
-import { UserData } from "../pages";
 import nookies from 'nookies'
 import axios from 'axios';
 import { UserApi } from './UserApi';
+import { RoomApi } from './RoomApi';
 
-export const Api = (ctx: GetServerSidePropsContext) => {
+type ApiReturnType = ReturnType<typeof UserApi> & ReturnType<typeof RoomApi>
+
+export const Api = (ctx: GetServerSidePropsContext): ApiReturnType => {
   const cookies = nookies.get(ctx);
   const token = cookies?.token
 
@@ -13,6 +15,7 @@ export const Api = (ctx: GetServerSidePropsContext) => {
   })
   instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   return {
-   ...UserApi(instance)
-  }
+   ...UserApi(instance),
+   ...RoomApi(instance)
+  } as ApiReturnType
 };

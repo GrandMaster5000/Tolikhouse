@@ -4,13 +4,19 @@ import { Header } from "../../components/Header";
 import Link from "next/link";
 import React, { useState } from "react";
 import Head from "next/head";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import { checkAuth } from "../../utils/checkAuth";
 import { StartRoomModal } from '../../components/StartRoomModal';
+import { Api } from '../../api';
+import { Room } from '../../api/RoomApi';
 
-const Rooms = ({ rooms = [] }) => {
+interface RoomPageProps {
+  rooms: Room[];
+}
+
+const RoomsPage: NextPage<RoomPageProps> = ({ rooms = [] }) => {
   const [visibleModal, setVisibleModal] = useState(false);
-
+  console.log(rooms);
   return (
     <>
       <Head>
@@ -26,14 +32,13 @@ const Rooms = ({ rooms = [] }) => {
         {visibleModal && <StartRoomModal onClose={() => setVisibleModal(false)}/>}
         <div className="grid mt-30">
           {rooms.map((obj) => (
-            <Link key={obj._id} href={`/rooms/${obj._id}`}>
+            <Link key={obj.id} href={`/rooms/${obj.id}`}>
               <a className="d-flex">
                 <ConversationCard
                   title={obj.title}
-                  avatars={obj.avatars}
-                  guests={obj.guests}
-                  guestsCount={obj.guestsCount}
-                  speakersCount={obj.speakersCount}
+                  avatars={[]}
+                  speakers={obj.speakers}
+                  listenersCount={obj.listenersCount}
                 />
               </a>
             </Link>
@@ -44,9 +49,7 @@ const Rooms = ({ rooms = [] }) => {
   );
 };
 
-export default Rooms;
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps<RoomPageProps> = async (ctx) => {
   try {
     const user = await checkAuth(ctx);
 
@@ -60,10 +63,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       };
     }
 
+    const rooms = await Api(ctx).getRooms();
+
     return {
       props: {
-        user,
-        rooms: [],
+        rooms
       },
     };
   } catch (e) {
@@ -74,3 +78,5 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 };
+
+export default RoomsPage;
