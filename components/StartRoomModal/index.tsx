@@ -5,8 +5,9 @@ import React from 'react';
 import { Button } from '../Button';
 
 import styles from './StartRoomModal.module.scss';
-import { RoomApi, RoomType } from '../../api/RoomApi';
-import Axios  from '../../core/axios';
+import { Room, RoomType } from '../../api/RoomApi';
+import { fetchCreateRoom } from '../../redux/slices/roomSlice';
+import { useAsyncAction } from '../../hooks/useAction';
 
 interface StartRoomModalProps {
     onClose: () => void;
@@ -15,23 +16,19 @@ interface StartRoomModalProps {
 
 export const StartRoomModal = ({ onClose }: StartRoomModalProps) => {
     const router = useRouter();
-    const [roomType, setRoomType] = useState<RoomType>('open')
-    const [roomTitle, setRoomTitle] = useState('')
+    const [roomType, setRoomType] = useState<RoomType>('open');
+    const [roomTitle, setRoomTitle] = useState('');
+    const createRoom = useAsyncAction<any, Room>(fetchCreateRoom);
+
 
     const onSubmit = async () => {
-        try {
-            if (!roomTitle) {
-                return alert('Specify the title of the room')
-            }
-            const room = await RoomApi(Axios).createRoom({
-                title: roomTitle, 
-                type: roomType
-            })
-            router.push(`/rooms/${room.id}`)
-        } catch (e) {
-            alert('Error while creating a room')
+        if (!roomTitle) {
+            return alert('Specify the title of the room')
         }
-    }
+        const data: Room = await createRoom({ title: roomTitle, type: roomType });
+        (data);
+        router.push(`/rooms/${data.id}`);
+    };
 
     return (
         <div className={styles.overlay}>
@@ -87,5 +84,5 @@ export const StartRoomModal = ({ onClose }: StartRoomModalProps) => {
             </div>
         </div>
 
-    )
+    );
 }

@@ -3,10 +3,14 @@ import nookies from 'nookies'
 import axios from 'axios';
 import { UserApi } from './UserApi';
 import { RoomApi } from './RoomApi';
+import { Store } from '@reduxjs/toolkit';
+import { RootState } from '../redux/store';
 
 type ApiReturnType = ReturnType<typeof UserApi> & ReturnType<typeof RoomApi>
 
-export const Api = (ctx: GetServerSidePropsContext): ApiReturnType => {
+export const Api = (ctx: any & {
+  store: Store<RootState>;
+},): ApiReturnType => {
   const cookies = nookies.get(ctx);
   const token = cookies?.token
 

@@ -3,7 +3,6 @@ import { parseCookies } from "nookies";
 
 const cookies = parseCookies();
 
-console.log(cookies);
 const instance = axios.create({
   baseURL: "http://localhost:3001",
 });
