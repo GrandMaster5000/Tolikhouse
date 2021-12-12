@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import Link from 'next/link';
 import React from 'react';
 import { Avatar } from '../Avatar';
 import { BackButton } from '../BackButton';

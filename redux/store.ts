@@ -1,10 +1,12 @@
 import { combineReducers, configureStore, Store } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
 import { roomsReducer } from './slices/roomSlice';
+import { userReducer } from './slices/userSlice';
 import { RootState } from './types';
 
 const rootReducer = combineReducers({
     rooms: roomsReducer,
+    user: userReducer
 });
 
 

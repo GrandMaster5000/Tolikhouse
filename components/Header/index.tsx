@@ -1,11 +1,15 @@
 import clsx from "clsx";
 import Link from "next/link";
 import React from "react";
+import { useSelector } from 'react-redux';
+import { selectUserData } from '../../redux/selectors';
 import { Avatar } from "../Avatar";
 
 import styles from "./Header.module.scss";
 
 export const Header = () => {
+  const userData = useSelector(selectUserData);
+
   return (
     <div className={styles.header}>
       <div className="container d-flex align-items-center justify-content-between">
@@ -19,11 +23,12 @@ export const Header = () => {
         </Link>
         <Link href="/profile/1">
           <div className="d-flex align-items-center cup">
-            <b className="mr-5">Archakov Dennis</b>
+            <b className="mr-15">{userData?.fullname}</b>
             <Avatar
-              src="https://sun2-3.userapi.com/s/v1/if1/CAR1Aao3yIica7xq77xIIMMTn29CME-cE5JSJBc8OTNVt29JQjnhR0ZsX_9IO-AzgwVbfgB6.jpg?size=200x0&quality=96&crop=138,44,1048,1048&ava=1"
-              width="50px"
-              height="50px"
+              src={userData?.avatarUrl}
+              width="40px"
+              height="40px"
+              className='mb-0'
             />
           </div>
         </Link>
