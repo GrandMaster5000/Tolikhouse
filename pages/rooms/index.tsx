@@ -2,7 +2,7 @@ import { Button } from "../../components/Button";
 import { ConversationCard } from "../../components/ConversationsCard";
 import { Header } from "../../components/Header";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { checkAuth } from "../../utils/checkAuth";
 import { StartRoomModal } from '../../components/StartRoomModal';
@@ -12,10 +12,18 @@ import { useSelector } from 'react-redux';
 import { wrapper } from '../../redux/store';
 import { setRooms } from '../../redux/slices/roomSlice';
 import { setUserData } from '../../redux/slices/userSlice';
+import { useSocket } from '../../hooks/useSocket';
 
 const RoomsPage = () => {
   const [visibleModal, setVisibleModal] = useState(false);
-  const rooms = useSelector(selectRooms)
+  const rooms = useSelector(selectRooms);
+  const socket = useSocket();
+
+  useEffect(() => {
+    socket.on('SERVER@ROOMS:HOME', ({ speakers, roomId }) => {
+
+    })
+  }, [])
 
   return (
     <>
@@ -36,7 +44,6 @@ const RoomsPage = () => {
               <a className="d-flex">
                 <ConversationCard
                   title={obj.title}
-                  avatars={[]}
                   speakers={obj.speakers || []}
                   listenersCount={obj.listenersCount}
                 />

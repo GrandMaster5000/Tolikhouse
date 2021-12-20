@@ -9,6 +9,7 @@ import io, { Socket } from 'socket.io-client'
 import { useSelector } from 'react-redux'
 import { selectUserData } from '../../redux/selectors'
 import { UserData } from '../../pages'
+import { useSocket } from '../../hooks/useSocket'
 
 interface RoomProps {
     title: string;
@@ -18,30 +19,28 @@ export const Room = ({ title }: RoomProps) => {
     const user = useSelector(selectUserData)
     const router = useRouter();
     const [users, setUsers] = useState<UserData[]>([]);
-    const socketRef = useRef<Socket>()
+    const socket = useSocket();
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            socketRef.current = io('http://localhost:3001');
-
-            socketRef.current.emit('CLIENT@ROOMS:JOIN', {
+            socket.emit('CLIENT@ROOMS:JOIN', {
                 user,
                 roomId: router.query.id
             })
 
-            socketRef.current.on('SERVER@ROOMS:LEAVE', (leaveUser) => {
+            socket.on('SERVER@ROOMS:LEAVE', (leaveUser) => {
                 setUsers(prev => prev.filter(obj => obj.id !== leaveUser.id))
             })
 
-            socketRef.current.on('SERVER@ROOMS:JOIN', users => {
+            socket.on('SERVER@ROOMS:JOIN', users => {
                 setUsers(users)
             })
 
-            setUsers(prev => [...prev, user])
+            // setUsers(prev => [...prev, user])
         }
 
         return () => {
-            socketRef.current.disconnect();
+            socket.disconnect();
         }
     }, [])
 

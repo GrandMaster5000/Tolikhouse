@@ -3,6 +3,7 @@ import { Room, RoomApi, RoomType } from '../../api/RoomApi';
 import Axios from '../../core/axios';
 import { HYDRATE } from 'next-redux-wrapper';
 import { RootState } from '../types';
+import { UserData } from '../../pages';
 
 export interface RoomSliceState {
     items: Room[]
@@ -34,6 +35,14 @@ export const roomSlice = createSlice({
     reducers: {
         setRooms: (state, action: PayloadAction<Room[]>) => {
             state.items = action.payload;
+        },
+        setRoomSpeakers: (state, action: PayloadAction<{ speakers: Room['speakers']; roomId: number }>) => {
+            state.items = state.items.map(room => {
+                if(room.id === action.payload.roomId) {
+                    room.speakers = action.payload.speakers;
+                }
+                return room;
+            });
         }
     },
     extraReducers: {

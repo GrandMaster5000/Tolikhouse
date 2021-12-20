@@ -9,7 +9,8 @@ import AuthController from "./controllers/AuthController";
 import UploadController from "./controllers/UploadController";
 import RoomController from "./controllers/RoomController";
 import { createServer } from 'http';
-import { SocketRoom } from '../utils/getUsersFromRoom';
+import { getUsersFromRoom, SocketRoom } from '../utils/getUsersFromRoom';
+import { Room } from '../models'
 
 dotenv.config({
   path: "./server/.env",
@@ -31,18 +32,19 @@ io.on('connection', socket => {
   socket.on('CLIENT@ROOMS:JOIN', ({user, roomId}) => {
     socket.join(`room/${roomId}`);
     rooms[socket.id] = { roomId, user };
-    socket.to(`room/${roomId}`).emit(
-      'SERVER@ROOMS:JOIN',
-      Object.values(rooms).filter(obj => obj.roomId === roomId)
-      .map((obj) => obj.user)
-    );
+    const speakers = getUsersFromRoom(rooms, roomId);
+    io.emit('SERVER@ROOMS:HOME', { roomId: +roomId, speakers });
+    io.in(`room/${roomId}`).emit('SERVER@ROOMS:JOIN', speakers);
+    Room.update({ speakers }, { where: { id: roomId } });
   })
 
   socket.on('disconnect', () => {
     if (rooms[socket.id]) {
       const { roomId, user } = rooms[socket.id]
-      io.to(`room/${roomId}`).emit('SERVER@ROOMS:LEAVE', user);
+      socket.broadcast.to(`room/${roomId}`).emit('SERVER@ROOMS:LEAVE', user);
       delete rooms[socket.id];
+      const speakers = getUsersFromRoom(rooms, roomId);
+      Room.update({ speakers }, { where: { id: roomId } });
     }
   })
 })
