@@ -1,7 +1,22 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client'
 export const useSocket = () => {
     const socketRef = useRef<Socket>();
-    socketRef.current = io('http://localhost:3001');
+
+    if(!socketRef.current) {
+        socketRef.current = typeof window !== undefined && io('http://localhost:3001');
+    } else {
+        socketRef.current.connect();
+    }
+
+
+    useEffect(() => {
+        return () => {
+            if(socketRef.current) {
+                socketRef.current.disconnect();
+            }
+        }
+    }, [])
+
     return socketRef.current;
 }

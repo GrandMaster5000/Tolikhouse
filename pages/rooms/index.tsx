@@ -8,7 +8,7 @@ import { checkAuth } from "../../utils/checkAuth";
 import { StartRoomModal } from '../../components/StartRoomModal';
 import { Api } from '../../api';
 import { selectRooms } from '../../redux/selectors';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { wrapper } from '../../redux/store';
 import { setRooms } from '../../redux/slices/roomSlice';
 import { setUserData } from '../../redux/slices/userSlice';
@@ -17,6 +17,7 @@ import { useSocket } from '../../hooks/useSocket';
 const RoomsPage = () => {
   const [visibleModal, setVisibleModal] = useState(false);
   const rooms = useSelector(selectRooms);
+  const dispatch = useDispatch()
   const socket = useSocket();
 
   useEffect(() => {

@@ -36,6 +36,20 @@ io.on('connection', socket => {
     io.emit('SERVER@ROOMS:HOME', { roomId: +roomId, speakers });
     io.in(`room/${roomId}`).emit('SERVER@ROOMS:JOIN', speakers);
     Room.update({ speakers }, { where: { id: roomId } });
+  });
+
+  socket.on('CLIENT@ROOMS:CALL', ({user, roomId, signal}) => {
+    socket.broadcast.to(`room/${roomId}`).emit('SERVER@ROOMS:CALL', {
+      user,
+      signal
+    });
+  });
+
+  socket.on('CLIENT@ROOMS:ANSWER', ({ targetUserId, roomId, signal}) => {
+    socket.broadcast.to(`room/${roomId}`).emit('SERVER@ROOMS:ANSWER', {
+      targetUserId,
+      signal
+    });
   })
 
   socket.on('disconnect', () => {
@@ -44,9 +58,10 @@ io.on('connection', socket => {
       socket.broadcast.to(`room/${roomId}`).emit('SERVER@ROOMS:LEAVE', user);
       delete rooms[socket.id];
       const speakers = getUsersFromRoom(rooms, roomId);
+      io.emit('SERVER@ROOMS:HOME', { roomId: +roomId, speakers }); 
       Room.update({ speakers }, { where: { id: roomId } });
     }
-  })
+  });
 })
 
 app.use(cors());

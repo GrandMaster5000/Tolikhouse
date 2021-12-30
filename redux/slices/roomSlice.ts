@@ -59,5 +59,5 @@ export const roomSlice = createSlice({
 })
 
 
-export const { setRooms } = roomSlice.actions;
+export const { setRooms, setRoomSpeakers } = roomSlice.actions;
 export const roomsReducer = roomSlice.reducer
