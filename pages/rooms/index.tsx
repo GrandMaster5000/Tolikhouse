@@ -10,7 +10,7 @@ import { Api } from '../../api';
 import { selectRooms } from '../../redux/selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { wrapper } from '../../redux/store';
-import { setRooms } from '../../redux/slices/roomSlice';
+import { setRooms, setRoomSpeakers  } from '../../redux/slices/roomSlice';
 import { setUserData } from '../../redux/slices/userSlice';
 import { useSocket } from '../../hooks/useSocket';
 
@@ -22,9 +22,15 @@ const RoomsPage = () => {
 
   useEffect(() => {
     socket.on('SERVER@ROOMS:HOME', ({ speakers, roomId }) => {
-
+      console.log('HOME');
+      console.log(speakers, 'gg');
+      dispatch(setRoomSpeakers({ speakers, roomId }));
     })
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    console.log(rooms, 'rooms');
+  }, [rooms])
 
   return (
     <>

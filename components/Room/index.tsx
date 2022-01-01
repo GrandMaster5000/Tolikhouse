@@ -15,6 +15,7 @@ interface RoomProps {
     title: string;
 }
 
+let peers = [];
 export const Room = ({ title }: RoomProps) => {
     const user = useSelector(selectUserData)
     const router = useRouter();
@@ -24,64 +25,118 @@ export const Room = ({ title }: RoomProps) => {
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            navigator.mediaDevices.getUserMedia({
-                audio: true
-            }).then((stream) => {
-                const peerIncome = new Peer({
-                    initiator: true,
-                    trickle: false,
-                    stream
-                });
-
-                peerIncome.on('signal', signal => {
-                    socket.emit('CLIENT@ROOMS:CALL', {
+            navigator.mediaDevices
+                .getUserMedia({
+                    audio: true,
+                })
+                .then((stream) => {
+                    socket.emit('CLIENT@ROOMS:JOIN', {
                         user,
                         roomId,
-                        signal
-                    })
-                })
-
-                socket.on('SERVER@ROOMS:CALL', ({user: callerUser, signal}) => {
-                    const peerOutcome = new Peer({
-                        initiator: false,
-                        trickle: false
                     });
 
-                    peerOutcome.signal(signal);
+                    socket.on('SERVER@ROOMS:JOIN', (allUsers: UserData[]) => {
+                        console.log(allUsers);
 
-                    peerOutcome.on('stream', (stream) => {
-                        document.querySelector('audio').srcObject = stream;
-                        document.querySelector('audio').play();
-                    }).on('signal', (signal) => {
-                        socket.emit('CLIENT@ROOMS:ANSWER', {
-                            targetUserId: callerUser,
-                            roomId,
-                            signal
-                        })
-                    })
+                        setUsers(allUsers);
+
+                        allUsers.forEach((speaker) => {
+                            if (user.id !== speaker.id && !peers.find((obj) => obj.id !== speaker.id)) {
+                                const peerIncome = new Peer({
+                                    initiator: true,
+                                    trickle: false,
+                                    stream,
+                                });
+
+                                // Получили сигнал от ICE-сервера и просим всех участников позвонить мне
+                                peerIncome.on('signal', (signal) => {
+                                    console.log(signal, 222);
+                                    console.log(
+                                        '1. СИГНАЛ СОЗДАН. ПРОСИМ ЮЗЕРА ' + speaker.fullname + ' НАМ ПОЗВОНИТЬ',
+                                    );
+                                    socket.emit('CLIENT@ROOMS:CALL', {
+                                        targetUserId: speaker.id,
+                                        callerUserId: user.id,
+                                        roomId,
+                                        signal,
+                                    });
+                                    peers.push({
+                                        peer: peerIncome,
+                                        id: speaker.id,
+                                    });
+                                });
+
+                                socket.on(
+                                    'SERVER@ROOMS:CALL',
+                                    ({ targetUserId, callerUserId, signal: callerSignal }) => {
+                                        console.log('2. ЮЗЕР ' + callerUserId + ' ПОДКЛЮЧИЛСЯ, ЗВОНИМ!');
+
+                                        const peerOutcome = new Peer({
+                                            initiator: false,
+                                            trickle: false,
+                                            stream,
+                                        });
+
+                                        // Звоним человеку м ждём сигнал, который нам необходимо передать обратно юзеру на ответ
+                                        peerOutcome.signal(callerSignal);
+
+                                        peerOutcome
+                                            // Получаем сигнал от ICE-сервера и отправляем его юзеру, чтобы он получил наш сигнал для соединения
+                                            .on('signal', (outSignal) => {
+                                                console.log(
+                                                    '3. ПОЛУЧИЛИ СИГНАЛ НАШ, ОТПРАВЛЯЕМ В ОТВЕТ ЮЗЕРУ ' + callerUserId,
+                                                );
+                                                socket.emit('CLIENT@ROOMS:ANSWER', {
+                                                    targetUserId: callerUserId,
+                                                    callerUserId: targetUserId,
+                                                    roomId,
+                                                    signal: outSignal,
+                                                });
+                                            })
+                                            // Когда нам ответили, воспроизводим звук
+                                            .on('stream', (stream) => {
+                                                document.querySelector('audio').srcObject = stream;
+                                                document.querySelector('audio').play();
+                                            });
+                                    },
+                                );
+
+                                socket.on('SERVER@ROOMS:ANSWER', ({ callerUserId, signal }) => {
+                                    const obj = peers.find((obj) => Number(obj.id) === Number(callerUserId));
+                                    if (obj) {
+                                        obj.peer.signal(signal);
+                                    }
+                                    console.log('4. МЫ ОТВЕТИЛИ ЮЗЕРУ', callerUserId);
+                                });
+                            }
+                        });
+                    });
+
+                    socket.on('SERVER@ROOMS:LEAVE', (leaveUser: UserData) => {
+                        console.log(leaveUser.id, peers);
+                        console.log('destroyed');
+                        setUsers((prev) =>
+                            prev.filter((prevUser) => {
+                                const peerUser = peers.find((obj) => Number(obj.id) === Number(leaveUser.id));
+                                if (peerUser) {
+                                    peerUser.peer.destroy();
+                                }
+                                return prevUser.id !== leaveUser.id;
+                            }),
+                        );
+                    });
                 })
-
-                socket.on('SERVER@ROOMS:ANSWER', ({targetUserId, signal}) => {
-                    if(user.id === targetUserId) {
-                       peerIncome.signal(signal); 
-                    }
-                })
-            })
-            .catch(() => console.error('No access to microphone'))
-
-            socket.emit('CLIENT@ROOMS:JOIN', {
-                user,
-                roomId: roomId
-            })
-
-            socket.on('SERVER@ROOMS:LEAVE', (leaveUser) => {
-                setUsers(prev => prev.filter(obj => obj.id !== leaveUser.id))
-            })
-
-            socket.on('SERVER@ROOMS:JOIN', users => {
-                setUsers(users)
-            })
+                .catch(() => {
+                    console.error('Нет доступа к микрофону');
+                });
         }
+
+        return () => {
+            peers.forEach((obj) => {
+                obj.peer.destroy();
+            });
+        };
+
     }, [])
 
     return (

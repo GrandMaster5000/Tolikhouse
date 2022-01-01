@@ -13,6 +13,7 @@ export const useSocket = () => {
     useEffect(() => {
         return () => {
             if(socketRef.current) {
+                console.log('disconnect!!!');
                 socketRef.current.disconnect();
             }
         }

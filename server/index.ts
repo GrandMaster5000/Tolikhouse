@@ -38,30 +38,35 @@ io.on('connection', socket => {
     Room.update({ speakers }, { where: { id: roomId } });
   });
 
-  socket.on('CLIENT@ROOMS:CALL', ({user, roomId, signal}) => {
+  socket.on('CLIENT@ROOMS:CALL', ({targetUserId, callerUserId, roomId, signal}) => {
     socket.broadcast.to(`room/${roomId}`).emit('SERVER@ROOMS:CALL', {
-      user,
+      targetUserId,
+      callerUserId,
       signal
     });
   });
 
-  socket.on('CLIENT@ROOMS:ANSWER', ({ targetUserId, roomId, signal}) => {
+  socket.on('CLIENT@ROOMS:ANSWER', ({ targetUserId, callerUserId, roomId, signal}) => {
     socket.broadcast.to(`room/${roomId}`).emit('SERVER@ROOMS:ANSWER', {
       targetUserId,
+      callerUserId,
       signal
     });
   })
 
   socket.on('disconnect', () => {
+    console.log('USERS:' + rooms);
     if (rooms[socket.id]) {
-      const { roomId, user } = rooms[socket.id]
+      const { roomId, user } = rooms[socket.id];
       socket.broadcast.to(`room/${roomId}`).emit('SERVER@ROOMS:LEAVE', user);
       delete rooms[socket.id];
       const speakers = getUsersFromRoom(rooms, roomId);
-      io.emit('SERVER@ROOMS:HOME', { roomId: +roomId, speakers }); 
+      socket.emit('SERVER@ROOMS:HOME', { roomId: Number(roomId), speakers });
       Room.update({ speakers }, { where: { id: roomId } });
     }
   });
+
+
 })
 
 app.use(cors());
